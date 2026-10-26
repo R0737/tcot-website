@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Visitor!!!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --accent: #818cf8;
+      --accent-glow: rgba(129, 140, 248, 0.35);
+      --title-gradient: linear-gradient(135deg, #ffffff 0%, #a855f7 50%, #ec4899 100%);
+      --badge-bg: rgba(255, 255, 255, 0.08);
+      --badge-border: rgba(255, 255, 255, 0.18);
+    }
+
+    body.light-mode {
+      --bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(255, 255, 255, 0.8);
+      --text-main: #0f172a;
+      --text-muted: #334155;
+      --accent: #4f46e5;
+      --accent-glow: rgba(79, 70, 229, 0.25);
+      --title-gradient: linear-gradient(135deg, #0f172a 0%, #4f46e5 50%, #9333ea 100%);
+      --badge-bg: rgba(255, 255, 255, 0.6);
+      --badge-border: rgba(79, 70, 229, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background 0.4s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.6rem 1.2rem;
+      border-radius: 99px;
+      cursor: pointer;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .view-section {
+      display: none;
+      width: 100%;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* FANCY TITLE & SUBTITLE STYLES */
+    .hero-title {
+      font-size: 3.8rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.02em;
+      background: var(--title-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
+    }
+
+    .hero-subtitle {
+      display: inline-block;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      padding: 0.75rem 1.75rem;
+      border-radius: 50px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 3.5rem;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 2rem;
+      border-radius: 24px;
+      backdrop-filter: blur(16px);
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 15px 35px var(--accent-glow);
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .action-btn, .back-btn {
+      margin-top: 2.5rem;
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 25px var(--accent-glow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .action-btn:hover, .back-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px var(--accent-glow);
+    }
+
+    .sub-page-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 2.5rem;
+      border-radius: 24px;
+      backdrop-filter: blur(16px);
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
+    }
+
+    .sub-page-content h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+    }
+
+    .sub-page-content p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    /* COMING SOON BORDER BOX (NON-BUTTON) */
+    .coming-soon-box {
+      margin-top: 2rem;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 2px dashed var(--card-border);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      cursor: default;
+    }
+
+    .coming-soon-text {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+      text-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
+    }
+
+    /* PHOTO & VIDEO GALLERY STYLING */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .photo-item {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .photo-item:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      background: #000;
+      cursor: pointer;
+    }
+
+    .photo-item video {
+      width: 100%;
+      height: 200px;
+      object-fit: fill;
+      display: block;
+      background: #000;
+    }
+
+    .photo-caption {
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* LIGHTBOX MODAL STYLING */
+    .lightbox-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 15, 30, 0.85);
+      backdrop-filter: blur(10px);
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .lightbox-modal.active {
+      display: flex;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+      text-align: center;
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      object-fit: contain;
+    }
+
+    .lightbox-caption {
+      margin-top: 1rem;
+      color: #ffffff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -2.5rem;
+      right: 0;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 2rem;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Mode</button>
+
+  <div class="container">
+
+    <!-- HOME VIEW -->
+    <div id="home-view" class="view-section active">
+      <h1 class="hero-title">Professions</h1>
+      <div class="hero-subtitle">✨ Congratulations! You have successfully navigated to my custom webpage.</div>
+
+      <div class="grid">
+        <div class="card" onclick="switchView('photography-view')">
+          <h3>Photography</h3>
+          <p>These are some of the photographs which I have taken, hope you will like them!!!</p>
+        </div>
+        <div class="card" onclick="switchView('gaming-view')">
+          <h3>Gaming</h3>
+          <p>These are some of my gaming experiences and achievements. </p>
+        </div>
+        <div class="card" onclick="switchView('editing-view')">
+          <h3>Video Editing</h3>
+          <p>I have experience in editing videos for various purposes, including personal projects and professional work, here are some of them.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTOGRAPHY SUB-PAGE -->
+    <div id="photography-view" class="view-section">
+      <h1 class="hero-title">Photography</h1>
+      <div class="hero-subtitle">📷 Capturing moments through my lens</div>
+      <div class="sub-page-content">
+        <h2>Some Of My Favorite Shots</h2>
+        <p>Welcome to my photography showcase! Click any photo to view it in full screen:</p>
+        
+        <div class="photo-grid">
+          <div class="photo-item">
+            <img src="WhatsApp Image 2026-10-19 at 5.45.09 PM (1).jpeg" alt="Textured Moss Detail" onclick="openLightbox(this)" />
+            <div class="photo-caption">Textured Moss Details (Same Location)</div>
+          </div>
+          <div class="photo-item">
+            <img src="WhatsApp Image 2026-10-19 at 5.45.09 PM.jpeg" alt="Lush Green Moss Layer" onclick="openLightbox(this)" />
+            <div class="photo-caption">Lush Green Moss Layer (Same Location)</div>
+          </div>
+          <div class="photo-item">
+            <img src="WhatsApp Image 2026-10-19 at 6.59.00 PM (1).jpeg" alt="Cloudy Skies & Silhouette" onclick="openLightbox(this)" />
+            <div class="photo-caption">Cloudy Skies (Same Location)</div>
+          </div>
+          <div class="photo-item">
+            <img src="WhatsApp Image 2026-10-19 at 6.59.00 PM.jpeg" alt="Sunset Horizon" onclick="openLightbox(this)" />
+            <div class="photo-caption">Sunset Horizon With Birds (Same Location)</div>
+          </div>
+        </div>
+      </div>
+      <button class="back-btn" onclick="switchView('home-view')">← Back to Home</button>
+    </div>
+
+    <!-- GAMING SUB-PAGE -->
+    <div id="gaming-view" class="view-section">
+      <h1 class="hero-title">Gaming</h1>
+      <div class="hero-subtitle">🎮 Virtual worlds, epic moments, and achievements</div>
+      <div class="sub-page-content">
+        <h2>Gaming Experiences</h2>
+        <p>Gaming has always been a great way for me to strategize, and gain incredible experiences. Here you can see some of my favorite PC games and their clips!</p>
+        
+        <h3 style="margin-top: 2rem; color: var(--text-main); font-size: 1.5rem;">My Game Clips #VALORANT #MINECRAFT</h3>
+        
+        <div class="photo-grid">
+          <!-- Clip 1 -->
+          <div class="photo-item">
+            <video controls preload="metadata">
+              <source src="4k with op chamber.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="photo-caption">4K with OP #CHAMBER#MAP#PEARL</div>
+          </div>
+
+          <!-- Clip 2 -->
+          <div class="photo-item">
+            <video controls preload="metadata">
+              <source src="3k iso.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="photo-caption">3K #ISO#MAP#SUNSET</div>
+          </div>
+
+          <!-- New Video Clip (Update file name and caption as needed) -->
+          <div class="photo-item">
+            <video controls preload="metadata">
+              <source src="Minecraft (Heart of the Sea).mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="photo-caption">#MINECRAFT#HEARTOFTHESEA</div>
+          </div>
+        </div>
+
+      </div>
+      <button class="back-btn" onclick="switchView('home-view')">← Back to Home</button>
+    </div>
+
+    <!-- VIDEO EDITING SUB-PAGE -->
+    <div id="editing-view" class="view-section">
+      <h1 class="hero-title">Video Editing</h1>
+      <div class="hero-subtitle">🎬 Bringing stories to life frame by frame</div>
+      <div class="sub-page-content">
+        <h2>Editing Showcase</h2>
+        <p>From creative transitions to color grading and audio syncing, I enjoy the art of video editing. Here is where you can see my YouTube or Drive links to my video edits.</p>
+        
+        <div class="coming-soon-box">
+          <h2 class="coming-soon-text">COMING SOON</h2>
+        </div>
+      </div>
+      <button class="back-btn" onclick="switchView('home-view')">← Back to Home</button>
+    </div>
+
+    <!-- E-PORTFOLIO SUB-PAGE -->
+    <div id="portfolio-view" class="view-section">
+      <h1 class="hero-title">E-Portfolio</h1>
+      <div class="hero-subtitle">🚀 A deeper dive into my complete journey and skills</div>
+      <div class="sub-page-content">
+        <h2>About My Portfolio</h2>
+        <p>This section is dedicated to summarizing everything I do, my professional growth, contact details, and future goals.</p>
+      </div>
+      <button class="back-btn" onclick="switchView('home-view')">← Back to Home</button>
+    </div>
+
+  </div>
+
+  <!-- LIGHTBOX MODAL -->
+  <div id="lightbox" class="lightbox-modal" onclick="closeLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+      <img id="lightbox-img" src="" alt="" />
+      <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+    }
+
+    function switchView(viewId) {
+      const views = document.querySelectorAll('.view-section');
+      views.forEach(view => view.classList.remove('active'));
+
+      const targetView = document.getElementById(viewId);
+      if (targetView) {
+        targetView.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function openLightbox(imgElement) {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+
+      lightboxImg.src = imgElement.src;
+      lightboxCaption.textContent = imgElement.alt;
+      lightbox.classList.add('active');
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+    }
+  </script>
+</body>
+</html>
